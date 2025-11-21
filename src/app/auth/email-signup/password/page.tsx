@@ -231,7 +231,7 @@ function EmailSignupPasswordContent() {
               <div style={{
                 color: 'var(--colors-text-heading, #FFF)',
                 fontFamily: 'var(--type-font-family-primary, Montserrat)',
-                fontSize: 'var(--font-size-body-md, 0.875rem)',
+                fontSize: 'var(--font-size-body-md, 0.750rem)',
                 fontStyle: 'normal',
                 fontWeight: 400,
                 lineHeight: 'var(--line-height-body-md, 1.125rem)',
