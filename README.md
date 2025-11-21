@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WatchPod Web Authentication
 
-## Getting Started
+Mobile-first web authentication flows designed for Android WebView integration.
 
-First, run the development server:
+## Quick Start
 
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Open http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This project is organized for scalability with multiple authentication flows:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/                    # Next.js routes
+│   └── auth/              # Authentication pages
+├── components/auth/        # Auth flow components
+├── utils/                 # Utilities (API, Android bridge)
+├── hooks/                 # Custom React hooks
+└── types/                 # TypeScript definitions
+```
 
-## Learn More
+For detailed documentation, see [STRUCTURE.md](./STRUCTURE.md).
 
-To learn more about Next.js, take a look at the following resources:
+## Current Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### ✅ Email Signup Flow
+- Email entry screen
+- OTP verification
+- Password creation
+- Android bridge integration
+- Form validation & error handling
+- Mobile viewport fixes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Upcoming Features
 
-## Deploy on Vercel
+- [ ] Email Login
+- [ ] Google OAuth Signup
+- [ ] Apple Sign In
+- [ ] Password Reset
+- [ ] Social Login (Facebook, Twitter)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Android Integration
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### WebView Setup
+```kotlin
+webView.settings.javaScriptEnabled = true
+webView.addJavascriptInterface(WebAppBridge(this), "AndroidBridge")
+```
+
+### Bridge Methods Required
+```kotlin
+class WebAppBridge(private val context: Context) {
+    @JavascriptInterface
+    fun onSignupSuccess(token: String) { /* ... */ }
+    
+    @JavascriptInterface
+    fun onLoginSuccess(token: String) { /* ... */ }
+    
+    @JavascriptInterface
+    fun showToast(message: String) { /* ... */ }
+}
+```
+
+## API Integration
+
+Set your backend URL in `.env.local`:
+```env
+NEXT_PUBLIC_API_URL=https://your-api.com
+```
+
+Then uncomment API calls in components (search for `// API call commented out`).
+
+## Development
+
+- **Framework**: Next.js 15 (App Router)
+- **Styling**: Tailwind CSS
+- **Language**: TypeScript
+- **Target**: Android WebView
+
+## Testing
+
+### In Browser
+```bash
+npm run dev
+```
+Navigate to http://localhost:3000 - you'll see alerts/console logs for Android bridge calls.
+
+### In Android Studio
+1. Build the web app: `npm run build`
+2. Serve: `npm run start`
+3. Point your WebView to the server URL
+4. Bridge calls will execute native Android methods
+
+## Documentation
+
+- [STRUCTURE.md](./STRUCTURE.md) - Detailed project structure and patterns
+- [Backend README](./backend/README.md) - Example FastAPI backend
+
+## License
+
+MIT
