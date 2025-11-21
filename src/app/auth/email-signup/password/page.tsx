@@ -76,8 +76,11 @@ function EmailSignupPasswordContent() {
       return;
     }
 
-    if (password.length < 8) {
-      setErrorMessage('Password must be at least 8 characters long');
+    // Password complexity: min 8 chars, at least one digit and one special character
+    const passwordHasNumber = /[0-9]/.test(password);
+    const passwordHasSpecial = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>\/?]/.test(password);
+    if (password.length < 8 || !passwordHasNumber || !passwordHasSpecial) {
+      setErrorMessage('Password must be at least 8 characters and include a number and a special character');
       setPasswordFieldError(true);
       return;
     }
@@ -224,8 +227,14 @@ function EmailSignupPasswordContent() {
               display: 'flex',
               width: '100%',
               padding: 'var(--spacing-xs, 0.5rem)',
-              alignItems: 'center',
-              gap: 'var(--spacing-xs, 0.5rem)'
+              paddingTop: '0.75rem',
+              paddingBottom: '0.75rem',
+              minHeight: '3rem',
+              alignItems: 'flex-start',
+              gap: 'var(--spacing-xs, 0.5rem)',
+              whiteSpace: 'normal',
+              overflowWrap: 'anywhere',
+              wordBreak: 'break-word'
             }}>
               <Image src="/alert.png" alt="alert icon" width={16} height={16} />
               <div style={{
@@ -235,7 +244,7 @@ function EmailSignupPasswordContent() {
                 fontStyle: 'normal',
                 fontWeight: 400,
                 lineHeight: 'var(--line-height-body-md, 1.125rem)',
-                whiteSpace: 'nowrap'
+                whiteSpace: 'normal'
               }}>{errorMessage}</div>
             </div>
           )}

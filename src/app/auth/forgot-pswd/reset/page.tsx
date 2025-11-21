@@ -51,8 +51,11 @@ function ForgotPasswordResetContent() {
       return;
     }
 
-    if (password.length < 8) {
-      setErrorMessage('Password must be at least 8 characters');
+    // Password complexity: min 8 chars, at least one digit and one special character
+    const passwordHasNumber = /[0-9]/.test(password);
+    const passwordHasSpecial = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>\/?]/.test(password);
+    if (password.length < 8 || !passwordHasNumber || !passwordHasSpecial) {
+      setErrorMessage('Password must be at least 8 characters and include a number and a special character');
       setPasswordFieldError(true);
       return;
     }
@@ -130,7 +133,7 @@ function ForgotPasswordResetContent() {
                 fontStyle: 'normal',
                 fontWeight: 400,
                 lineHeight: 'var(--line-height-body-md, 1.125rem)',
-                whiteSpace: 'nowrap'
+                whiteSpace: 'normal'
               }}>{errorMessage}</div>
             </div>
           )}

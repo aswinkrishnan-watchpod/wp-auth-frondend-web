@@ -121,8 +121,14 @@ function ForgotPasswordVerifyContent() {
               display: 'flex',
               width: '100%',
               padding: 'var(--spacing-xs, 0.5rem)',
-              alignItems: 'center',
-              gap: 'var(--spacing-xs, 0.5rem)'
+              paddingTop: '0.75rem',
+              paddingBottom: '0.75rem',
+              minHeight: '3rem',
+              alignItems: 'flex-start',
+              gap: 'var(--spacing-xs, 0.5rem)',
+              whiteSpace: 'normal',
+              overflowWrap: 'anywhere',
+              wordBreak: 'break-word'
             }}>
               <Image src="/alert.png" alt="alert icon" width={16} height={16} />
               <div style={{
@@ -132,7 +138,7 @@ function ForgotPasswordVerifyContent() {
                 fontStyle: 'normal',
                 fontWeight: 400,
                 lineHeight: 'var(--line-height-body-md, 1.125rem)',
-                whiteSpace: 'nowrap'
+                whiteSpace: 'normal'
               }}>{errorMessage}</div>
             </div>
           )}
