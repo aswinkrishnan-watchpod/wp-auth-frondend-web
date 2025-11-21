@@ -51,9 +51,10 @@ export default function ForgotPasswordPage() {
 
       // Navigate to verification page
       router.push(`/auth/forgot-pswd/verify?email=${encodeURIComponent(email)}`);
-    } catch (err: any) {
+    } catch (err) {
       console.error('Send OTP Error:', err);
-      setErrorMessage(err.message || 'Failed to send verification code');
+      const error = err as Error;
+      setErrorMessage(error.message || 'Failed to send verification code');
       setEmailFieldError(true);
     } finally {
       setLoadingEmail(false);

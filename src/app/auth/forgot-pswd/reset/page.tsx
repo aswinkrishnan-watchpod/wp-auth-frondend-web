@@ -1,11 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useViewportHeight } from '@/hooks/useViewportHeight';
 
-export default function ForgotPasswordResetPage() {
+function ForgotPasswordResetContent() {
   useViewportHeight();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -78,9 +78,10 @@ export default function ForgotPasswordResetPage() {
 
       // Navigate directly to login page on success
       router.push('/auth/email-login');
-    } catch (err: any) {
+    } catch (err) {
       console.error('Set Password Error:', err);
-      setErrorMessage(err.message || 'Failed to reset password');
+      const error = err as Error;
+      setErrorMessage(error.message || 'Failed to reset password');
     } finally {
       setLoadingReset(false);
     }
@@ -259,5 +260,13 @@ export default function ForgotPasswordResetPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ForgotPasswordResetPage() {
+  return (
+    <Suspense fallback={<div className="bg-black" style={{ height: '100vh' }} />}>
+      <ForgotPasswordResetContent />
+    </Suspense>
   );
 }

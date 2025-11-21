@@ -1,11 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useViewportHeight } from '@/hooks/useViewportHeight';
 
-export default function EmailSignupVerifyPage() {
+function EmailSignupVerifyContent() {
   useViewportHeight();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -13,7 +13,6 @@ export default function EmailSignupVerifyPage() {
 
   const [verificationCode, setVerificationCode] = useState('');
   const [loadingVerify, setLoadingVerify] = useState(false);
-  const [loadingEmail, setLoadingEmail] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [verificationFieldError, setVerificationFieldError] = useState(false);
 
@@ -53,9 +52,10 @@ export default function EmailSignupVerifyPage() {
 
       // Navigate to password page
       router.push(`/auth/email-signup/password?email=${encodeURIComponent(email)}`);
-    } catch (err: any) {
+    } catch (err) {
       console.error('Verify OTP Error:', err);
-      setErrorMessage(err.message || 'Invalid verification code');
+      const error = err as Error;
+      setErrorMessage(error.message || 'Invalid verification code');
       setVerificationFieldError(true);
     } finally {
       setLoadingVerify(false);
@@ -64,7 +64,7 @@ export default function EmailSignupVerifyPage() {
 
   const handleResendCode = async () => {
     setErrorMessage('');
-    setLoadingEmail(true);
+    setLoadingVerify(true);
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/otp`, {
@@ -82,11 +82,12 @@ export default function EmailSignupVerifyPage() {
       }
 
       console.log('Verification code resent');
-    } catch (err: any) {
+    } catch (err) {
       console.error('Resend OTP Error:', err);
-      setErrorMessage(err.message || 'Failed to resend verification code');
+      const error = err as Error;
+      setErrorMessage(error.message || 'Failed to resend verification code');
     } finally {
-      setLoadingEmail(false);
+      setLoadingVerify(false);
     }
   };
 
@@ -139,7 +140,7 @@ export default function EmailSignupVerifyPage() {
             lineHeight: '1.75rem'
           }}>Please verify your email address</h1>
           <p className="text-gray-400 text-sm mb-2">
-            We've sent a one-time code to <span className="text-white">{email}</span>. The code will expire in 10 minutes.
+            We&apos;ve sent a one-time code to <span className="text-white">{email}</span>. The code will expire in 10 minutes.
           </p>
 
           <div className="flex-1 mt-8">
@@ -175,7 +176,7 @@ export default function EmailSignupVerifyPage() {
                 fontWeight: 400,
                 lineHeight: 'var(--line-height-body-sm, 1rem)'
               }}>
-                Don't see an email? <button onClick={handleResendCode} className="text-white underline">Resend</button>
+                Don&apos;t see an email? <button onClick={handleResendCode} className="text-white underline">Resend</button>
               </p>
             </div>
           </div>
@@ -211,5 +212,13 @@ export default function EmailSignupVerifyPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function EmailSignupVerifyPage() {
+  return (
+    <Suspense fallback={<div className="bg-black" style={{ height: '100vh' }} />}>
+      <EmailSignupVerifyContent />
+    </Suspense>
   );
 }

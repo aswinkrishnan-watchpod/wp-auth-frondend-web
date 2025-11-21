@@ -108,7 +108,7 @@ export const notifySignupSuccess = async (token: string): Promise<void> => {
         try {
           const parsed = JSON.parse(token);
           tokenEmail = parsed?.email ?? null;
-        } catch (e) {
+        } catch {
           // not JSON — treat token as raw
           tokenEmail = token;
         }
@@ -118,16 +118,16 @@ export const notifySignupSuccess = async (token: string): Promise<void> => {
           return;
         }
       }
-    } catch (e) {
+    } catch {
       // if our defensive logic fails, continue to call the bridge as before
-      console.warn('Error in duplicate-guard logic for notifySignupSuccess:', e);
+      console.warn('Error in duplicate-guard logic for notifySignupSuccess');
     }
     // If a separate method for token+email exists, and the token string is a JSON payload
     // containing access_token and email, call that method with separate args.
     let parsed: { access_token?: string; email?: string } | null = null;
     try {
       parsed = JSON.parse(token);
-    } catch (e) {
+    } catch {
       // not JSON - ignore
     }
 

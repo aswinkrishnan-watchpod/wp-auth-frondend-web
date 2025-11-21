@@ -1,11 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useViewportHeight } from '@/hooks/useViewportHeight';
 
-export default function ForgotPasswordVerifyPage() {
+function ForgotPasswordVerifyContent() {
   useViewportHeight();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -52,9 +52,10 @@ export default function ForgotPasswordVerifyPage() {
 
       // Navigate to reset password page
       router.push(`/auth/forgot-pswd/reset?email=${encodeURIComponent(email)}`);
-    } catch (err: any) {
+    } catch (err) {
       console.error('Verify OTP Error:', err);
-      setErrorMessage(err.message || 'Wrong code');
+      const error = err as Error;
+      setErrorMessage(error.message || 'Wrong code');
       setOtpFieldError(true);
     } finally {
       setLoadingOtp(false);
@@ -79,9 +80,10 @@ export default function ForgotPasswordVerifyPage() {
       }
 
       alert('Verification code sent!');
-    } catch (err: any) {
+    } catch (err) {
       console.error('Resend OTP Error:', err);
-      alert(err.message || 'Failed to resend code. Please try again.');
+      const error = err as Error;
+      alert(error.message || 'Failed to resend code. Please try again.');
     } finally {
       setLoadingOtp(false);
     }
@@ -211,5 +213,13 @@ export default function ForgotPasswordVerifyPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ForgotPasswordVerifyPage() {
+  return (
+    <Suspense fallback={<div className="bg-black" style={{ height: '100vh' }} />}>
+      <ForgotPasswordVerifyContent />
+    </Suspense>
   );
 }

@@ -1,12 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useViewportHeight } from '@/hooks/useViewportHeight';
 import { navigateBackToApp } from '@/utils/androidBridge';
 
-export default function EmailSignupPasswordPage() {
+function EmailSignupPasswordContent() {
   useViewportHeight();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -21,7 +21,6 @@ export default function EmailSignupPasswordPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [passwordFieldError, setPasswordFieldError] = useState(false);
   const [confirmPasswordFieldError, setConfirmPasswordFieldError] = useState(false);
-  const [idToken, setIdToken] = useState<string | null>(null);
   const [isGoogleSignup, setIsGoogleSignup] = useState(false);
 
   // Get idToken from AndroidBridge if available (for Google signup flow)
@@ -30,7 +29,6 @@ export default function EmailSignupPasswordPage() {
       try {
         const token = window.AndroidBridge.getIdToken();
         console.log('Got idToken from AndroidBridge:', token?.substring(0, 20) + '...');
-        setIdToken(token);
         setIsGoogleSignup(!!token);
       } catch (e) {
         console.error('Error getting idToken from AndroidBridge:', e);
@@ -129,7 +127,7 @@ export default function EmailSignupPasswordPage() {
         : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/password`;
 
       // Build request body
-      const requestBody: any = { email, password };
+      const requestBody: Record<string, string> = { email, password };
       if (isGoogleSignup && currentIdToken) {
         requestBody.id_token = currentIdToken;
       }
@@ -185,9 +183,10 @@ export default function EmailSignupPasswordPage() {
       } else {
         setErrorMessage('No access token received');
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Set Password Error:', err);
-      setErrorMessage(err.message || 'Failed to set password');
+      const error = err as Error;
+      setErrorMessage(error.message || 'Failed to set password');
     } finally {
       setLoadingPassword(false);
     }
@@ -384,5 +383,13 @@ export default function EmailSignupPasswordPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function EmailSignupPasswordPage() {
+  return (
+    <Suspense fallback={<div className="bg-black" style={{ height: '100vh' }} />}>
+      <EmailSignupPasswordContent />
+    </Suspense>
   );
 }

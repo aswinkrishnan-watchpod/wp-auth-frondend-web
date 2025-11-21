@@ -2,12 +2,12 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useViewportHeight } from '@/hooks/useViewportHeight';
 import { notifyLoginSuccess } from '@/utils/androidBridge';
 
-export default function EmailLoginPasswordPage() {
+function EmailLoginPasswordContent() {
   useViewportHeight();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -73,9 +73,10 @@ export default function EmailLoginPasswordPage() {
         console.error('No access token in response:', data);
         throw new Error('No access token received');
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Login error:', err);
-      setErrorMessage(err.message || 'Wrong password');
+      const error = err as Error;
+      setErrorMessage(error.message || 'Wrong password');
       setPasswordFieldError(true);
     } finally {
       setLoadingPassword(false);
@@ -217,5 +218,13 @@ export default function EmailLoginPasswordPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function EmailLoginPasswordPage() {
+  return (
+    <Suspense fallback={<div className="bg-black" style={{ height: '100vh' }} />}>
+      <EmailLoginPasswordContent />
+    </Suspense>
   );
 }
