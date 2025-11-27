@@ -68,7 +68,7 @@ function EmailLoginPasswordContent() {
       // Pass the access token to Android app
       if (data.access_token) {
         console.log('Login successful, token received');
-        notifyLoginSuccess(data.access_token);
+        notifyLoginSuccess(data.access_token, email);
       } else {
         console.error('No access token in response:', data);
         throw new Error('No access token received');

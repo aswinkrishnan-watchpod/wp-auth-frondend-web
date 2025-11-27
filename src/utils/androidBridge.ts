@@ -11,6 +11,8 @@ interface AndroidBridge {
   // onSignupSuccess removed from newer Android builds; keep optional for compatibility
   onSignupSuccess?: (token: string) => void;
   onLoginSuccess: (token: string) => void;
+  // New optional method that accepts token and email separately for login
+  onLoginSuccessWithEmail?: (token: string, email: string) => void;
   showToast: (message: string) => void;
   // New optional method that accepts token and email separately
   onSignupSuccessWithEmail?: (token: string, email: string) => void;
@@ -166,7 +168,7 @@ export const notifySignupSuccess = async (token: string): Promise<void> => {
  * Call Android bridge method for successful login
  * @param token - Authentication token to pass to Android app
  */
-export const notifyLoginSuccess = async (token: string): Promise<void> => {
+export const notifyLoginSuccess = async (token: string, email?: string): Promise<void> => {
   if (typeof window === 'undefined') return;
 
   console.log('=== notifyLoginSuccess called ===');
@@ -175,22 +177,26 @@ export const notifyLoginSuccess = async (token: string): Promise<void> => {
   console.log('Token preview:', token.substring(0, 50) + '...');
   
   const bridge = await waitForBridge();
-  
-  if (bridge && typeof bridge.onLoginSuccess === 'function') {
-    console.log('✓ Calling bridge.onLoginSuccess with token');
-    try {
-      bridge.onLoginSuccess(token);
-      console.log('✓ bridge.onLoginSuccess called successfully');
-    } catch (err) {
-      console.error('✗ Error calling bridge.onLoginSuccess:', err);
+  if (bridge) {
+    // Prefer the new two-arg method if available and email was provided
+    if (email && typeof bridge.onLoginSuccessWithEmail === 'function') {
+      console.log('✓ Calling bridge.onLoginSuccessWithEmail with token and email');
+      try {
+        bridge.onLoginSuccessWithEmail(token, email);
+        console.log('✓ bridge.onLoginSuccessWithEmail called successfully');
+      } catch (err) {
+        console.error('✗ Error calling bridge.onLoginSuccessWithEmail:', err);
+      }
+      return;
     }
-    return;
+
+    
   }
-  
+
   // Fallback for browser testing
   console.warn('✗ No Android bridge found - running in browser mode');
   console.log('Login successful! Token:', token);
-  alert('Login successful! (Browser mode)\nToken: ' + token.substring(0, 50) + '...');
+  alert('Login successful! (Browser mode)\nToken: ' + token.substring(0, 50) + '...' + (email ? '\nEmail: ' + email : ''));
 };
 
 /**
