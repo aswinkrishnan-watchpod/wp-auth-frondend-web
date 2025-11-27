@@ -178,11 +178,11 @@ export const notifyLoginSuccess = async (token: string, email?: string): Promise
   
   const bridge = await waitForBridge();
   if (bridge) {
-    // Prefer the new two-arg method if available and email was provided
-    if (email && typeof bridge.onLoginSuccessWithEmail === 'function') {
+    // Prefer the new two-arg method if available (call even if email is empty)
+    if (typeof bridge.onLoginSuccessWithEmail === 'function') {
       console.log('✓ Calling bridge.onLoginSuccessWithEmail with token and email');
       try {
-        bridge.onLoginSuccessWithEmail(token, email);
+        bridge.onLoginSuccessWithEmail(token, email ?? '');
         console.log('✓ bridge.onLoginSuccessWithEmail called successfully');
       } catch (err) {
         console.error('✗ Error calling bridge.onLoginSuccessWithEmail:', err);
@@ -196,7 +196,7 @@ export const notifyLoginSuccess = async (token: string, email?: string): Promise
   // Fallback for browser testing
   console.warn('✗ No Android bridge found - running in browser mode');
   console.log('Login successful! Token:', token);
-  alert('Login successful! (Browser mode)\nToken: ' + token.substring(0, 50) + '...' + (email ? '\nEmail: ' + email : ''));
+  //alert('Login successful! (Browser mode)\nToken: ' + token.substring(0, 50) + '...' + (email ? '\nEmail: ' + email : ''));
 };
 
 /**
