@@ -40,12 +40,25 @@ For detailed documentation, see [STRUCTURE.md](./STRUCTURE.md).
 - Form validation & error handling
 - Mobile viewport fixes
 
+### ✅ Email Login Flow
+- Email entry screen
+- Password entry with show/hide toggle
+- Forgot password link
+- API integration for authentication
+- Android bridge integration (login success callback)
+- Form validation & error handling
+
+### ✅ Password Reset Flow
+- Email entry screen
+- OTP verification
+- New password creation
+- API integration
+- Form validation & error handling
+
 ## Upcoming Features
 
-- [ ] Email Login
 - [ ] Google OAuth Signup
 - [ ] Apple Sign In
-- [ ] Password Reset
 - [ ] Social Login (Facebook, Twitter)
 
 ## Android Integration
