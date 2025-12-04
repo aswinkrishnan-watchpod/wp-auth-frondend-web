@@ -24,7 +24,9 @@ export default function RootLayout({
         className={`${montserrat.variable} antialiased font-sans`}
         style={{ fontFamily: 'var(--font-montserrat)' }}
       >
-        {children}
+        <div className="max-w-md mx-auto min-h-screen">
+          {children}
+        </div>
       </body>
     </html>
   );
