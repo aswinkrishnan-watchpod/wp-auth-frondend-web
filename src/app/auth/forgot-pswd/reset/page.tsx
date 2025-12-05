@@ -147,7 +147,7 @@ function ForgotPasswordResetContent() {
           <div className="flex-1 space-y-6">
             {/* Password */}
             <div>
-              <label className="text-white text-sm block mb-2">Password</label>
+              <label className="text-white text-sm block mb-2">Password*</label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -191,7 +191,7 @@ function ForgotPasswordResetContent() {
 
             {/* Confirm Password */}
             <div>
-              <label className="text-white text-sm block mb-2">Confirm password</label>
+              <label className="text-white text-sm block mb-2">Confirm password*</label>
               <div className="relative">
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}

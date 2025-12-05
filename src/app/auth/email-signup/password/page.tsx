@@ -274,7 +274,7 @@ function EmailSignupPasswordContent() {
           <div className="flex-1 space-y-6">
             {/* Create Password */}
             <div>
-              <label className="text-white text-sm block mb-2">Create password</label>
+              <label className="text-white text-sm block mb-2">Create password*</label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -318,7 +318,7 @@ function EmailSignupPasswordContent() {
 
             {/* Confirm Password */}
             <div>
-              <label className="text-white text-sm block mb-2">Confirm password</label>
+              <label className="text-white text-sm block mb-2">Confirm password*</label>
               <div className="relative">
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
