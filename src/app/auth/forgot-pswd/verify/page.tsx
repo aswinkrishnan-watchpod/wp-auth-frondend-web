@@ -15,6 +15,7 @@ function ForgotPasswordVerifyContent() {
   const [loadingOtp, setLoadingOtp] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [otpFieldError, setOtpFieldError] = useState(false);
+  const [resendTimer, setResendTimer] = useState(20);
 
   // Redirect back if no email
   useEffect(() => {
@@ -22,6 +23,16 @@ function ForgotPasswordVerifyContent() {
       router.push('/auth/forgot-pswd');
     }
   }, [email, router]);
+
+  // Countdown timer for resend button
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const interval = setInterval(() => {
+        setResendTimer((prev) => prev - 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [resendTimer]);
 
   const handleOtpSubmit = async () => {
     if (!otp) {
@@ -63,7 +74,9 @@ function ForgotPasswordVerifyContent() {
   };
 
   const handleResendCode = async () => {
+    if (resendTimer > 0) return;
     setLoadingOtp(true);
+    setResendTimer(20);
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/password/reset`, {
         method: 'POST',
@@ -75,15 +88,13 @@ function ForgotPasswordVerifyContent() {
       console.log('Resend OTP Response:', data);
 
       if (!response.ok) {
-        alert(data.message || data.error || 'Failed to resend code. Please try again.');
+        setErrorMessage(data.message || data.error || 'Failed to resend code. Please try again.');
         return;
       }
-
-      alert('Verification code sent!');
     } catch (err) {
       console.error('Resend OTP Error:', err);
       const error = err as Error;
-      alert(error.message || 'Failed to resend code. Please try again.');
+      setErrorMessage(error.message || 'Failed to resend code. Please try again.');
     } finally {
       setLoadingOtp(false);
     }
@@ -181,8 +192,15 @@ function ForgotPasswordVerifyContent() {
               <p className="text-red-500 text-xs mt-2">Required field</p>
             )}
 
-            <div className="mt-4 flex justify-end items-center text-sm">
-              <button onClick={handleResendCode} className="text-[#F89880] hover:underline">
+            <div className="mt-4 flex justify-between items-center text-sm">
+              <span className="text-gray-400">
+                {resendTimer > 0 ? `0:${resendTimer.toString().padStart(2, '0')}` : ''}
+              </span>
+              <button 
+                onClick={handleResendCode} 
+                disabled={resendTimer > 0}
+                className={`${resendTimer > 0 ? 'text-gray-500 cursor-not-allowed' : 'text-[#F89880] hover:underline'}`}
+              >
                 Resend code
               </button>
             </div>

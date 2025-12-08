@@ -15,6 +15,7 @@ function EmailSignupVerifyContent() {
   const [loadingVerify, setLoadingVerify] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [verificationFieldError, setVerificationFieldError] = useState(false);
+  const [resendTimer, setResendTimer] = useState(20);
 
   // Redirect back if no email
   useEffect(() => {
@@ -22,6 +23,16 @@ function EmailSignupVerifyContent() {
       router.push('/auth/email-signup');
     }
   }, [email, router]);
+
+  // Countdown timer for resend button
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const interval = setInterval(() => {
+        setResendTimer((prev) => prev - 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [resendTimer]);
 
   const handleVerificationSubmit = async () => {
     if (!verificationCode) {
@@ -63,8 +74,10 @@ function EmailSignupVerifyContent() {
   };
 
   const handleResendCode = async () => {
+    if (resendTimer > 0) return;
     setErrorMessage('');
     setLoadingVerify(true);
+    setResendTimer(20);
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/otp`, {
@@ -173,7 +186,10 @@ function EmailSignupVerifyContent() {
               <p className="text-red-500 text-xs mt-2">Required field</p>
             )}
 
-            <div className="mt-4 flex justify-end">
+            <div className="mt-4 flex justify-between items-center">
+              <span className="text-gray-400 text-sm">
+                {resendTimer > 0 ? `0:${resendTimer.toString().padStart(2, '0')}` : ''}
+              </span>
               <p style={{
                 color: 'var(--colors-text-body, #9B9C9B)',
                 fontFamily: 'var(--type-font-family-primary, Montserrat)',
@@ -182,7 +198,14 @@ function EmailSignupVerifyContent() {
                 fontWeight: 400,
                 lineHeight: 'var(--line-height-body-sm, 1rem)'
               }}>
-                Don&apos;t see an email? <button onClick={handleResendCode} className="text-white underline">Resend</button>
+                Don&apos;t see an email?{' '}
+                <button 
+                  onClick={handleResendCode} 
+                  disabled={resendTimer > 0}
+                  className={`${resendTimer > 0 ? 'text-gray-500 cursor-not-allowed' : 'text-white underline'}`}
+                >
+                  Resend
+                </button>
               </p>
             </div>
           </div>
