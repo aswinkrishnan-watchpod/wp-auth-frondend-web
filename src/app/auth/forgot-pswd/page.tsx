@@ -128,6 +128,16 @@ export default function ForgotPasswordPage() {
               fontWeight: 700,
               lineHeight: '1.75rem'
             }}>Forgot password</h1>
+            <p style={{
+              color: 'var(--colors-text-body, #9B9C9B)',
+              fontFamily: 'var(--type-font-family-primary, Montserrat)',
+              fontSize: 'var(--font-size-body-lg, 1rem)',
+              fontStyle: 'normal',
+              fontWeight: 400,
+              lineHeight: 'var(--line-height-body-lg, 1.25rem)'
+            }}>
+              Enter your email address, and we&apos;ll help you recover your account
+            </p>
             
             <div className="w-full">
               <label className="text-gray-400 text-sm block mb-2">Email address</label>
@@ -183,7 +193,7 @@ export default function ForgotPasswordPage() {
             lineHeight: '1.375rem'
           }}
         >
-          Continue
+          Send Code
         </button>
       </div>
       </div>

@@ -18,8 +18,12 @@ interface AndroidBridge {
   onSignupSuccessWithEmail?: (token: string, email: string) => void;
   // Method to get Google ID token for social signup flow
   getIdToken?: () => string;
+  // Method to get access token for authenticated API calls (e.g., change password)
+  getAccessToken?: () => string;
   // Method to navigate back to the Android app
   navigateBack?: () => void;
+  // Method called when password is successfully changed
+  onPasswordChanged?: () => void;
 }
 
 declare global {
