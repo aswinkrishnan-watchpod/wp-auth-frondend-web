@@ -106,8 +106,8 @@ function ForgotPasswordResetContent() {
             fontStyle: 'normal',
             fontWeight: 700,
             lineHeight: 'var(--line-height-body-lg, 1.25rem)'
-          }}>Set password</h2>
-          <button onClick={() => router.push(`/auth/forgot-pswd/verify?email=${encodeURIComponent(email)}`)} className="text-white absolute right-4">
+          }}>Reset password</h2>
+          <button onClick={() => router.push('/auth/forgot-pswd')} className="text-white absolute right-4">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
