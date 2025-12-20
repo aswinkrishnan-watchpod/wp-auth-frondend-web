@@ -99,7 +99,7 @@ export default function ChangePasswordPage() {
         setLoading(false);
         return;
       }
-
+      
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/password`, {
         method: 'PUT',
         headers: {
