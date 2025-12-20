@@ -2,13 +2,11 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useViewportHeight } from '@/hooks/useViewportHeight';
 import { navigateBackToApp } from '@/utils/androidBridge';
 
 export default function DeleteAccountPage() {
   useViewportHeight();
-  const router = useRouter();
 
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -181,7 +179,9 @@ export default function DeleteAccountPage() {
       // Call onAccountDeleted callback if available
       if (typeof window !== 'undefined' && window.AndroidBridge) {
         try {
-          const bridge = window.AndroidBridge as any;
+          const bridge = window.AndroidBridge as typeof window.AndroidBridge & {
+            onAccountDeleted?: () => void;
+          };
           if (typeof bridge.onAccountDeleted === 'function') {
             bridge.onAccountDeleted();
             console.log('✓ onAccountDeleted callback executed');
@@ -303,7 +303,7 @@ export default function DeleteAccountPage() {
             textAlign: 'left',
             whiteSpace: 'pre-line'
           }}>
-            You're about to delete your account.{'\n'}This action is irreversible. all your matches,{'\n'} pods and information will be permanently{'\n'} deleted.
+            You&apos;re about to delete your account.{'\n'}This action is irreversible. all your matches,{'\n'} pods and information will be permanently{'\n'} deleted.
           </h1>
 
           {/* Password Prompt */}
@@ -424,7 +424,7 @@ export default function DeleteAccountPage() {
                 fontWeight: 400,
                 lineHeight: 'var(--line-height-body-md, 1.125rem)'
               }}>
-                You won't be able to revert this action and all your data, including profile, pods will be lost.
+                You won&apos;t be able to revert this action and all your data, including profile, pods will be lost.
               </p>
 
               {/* Action Buttons */}

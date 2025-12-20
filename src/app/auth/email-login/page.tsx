@@ -3,14 +3,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useViewportHeight } from '@/hooks/useViewportHeight';
 import { navigateBackToApp } from '@/utils/androidBridge';
 import { notifyLoginSuccess } from '@/utils/androidBridge';
 
 export default function EmailLoginPage() {
   useViewportHeight();
-  const router = useRouter();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
